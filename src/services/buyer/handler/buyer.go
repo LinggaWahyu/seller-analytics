@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/sessions"
@@ -162,6 +164,14 @@ func (h *handler) UpdateOrderStatus(ctx *gin.Context) {
 		return
 	}
 
+	if _, ok := domain.UpdateOrderStatusVal[request.Status]; !ok {
+		ctx.Error(errors.New("unexpected status value, accepted status value is 'completed' and 'cancelled'"))
+		ctx.JSON(http.StatusBadRequest, OrderResponse{
+			Error: "unexpected status value, accepted status value is 'completed' and 'cancelled'",
+		})
+		return
+	}
+
 	res, err := h.OrderUsecase.UpdateOrderStatus(ctx, request.ID, request.Status)
 	if err != nil {
 		ctx.Error(err)
@@ -191,6 +201,9 @@ func (h *handler) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
+	session := sessions.Default(ctx)
+	buyerId := session.Get(domain.BuyerKey).(uint)
+
 	// convert handler request to domain order
 	var orderDetails []domain.OrderDetail
 	for _, v := range request.Products {
@@ -209,7 +222,7 @@ func (h *handler) CreateOrder(ctx *gin.Context) {
 
 	order := domain.Order{
 		OrderDate:    datatypes.Date(time.Now()),
-		BuyerID:      request.BuyerID,
+		BuyerID:      buyerId,
 		Status:       domain.OrderStatusNew,
 		InvoiceNo:    "INV-" + time.Now().Format("20060102150405"),
 		OrderDetails: orderDetails,
@@ -217,10 +230,17 @@ func (h *handler) CreateOrder(ctx *gin.Context) {
 
 	res, err := h.OrderUsecase.CreateOrder(ctx, order)
 	if err != nil {
-		ctx.Error(err)
-		ctx.JSON(http.StatusInternalServerError, OrderResponse{
-			Error: "something happened on our end, please try at a later time " + err.Error(),
-		})
+		if strings.Contains(err.Error(), "ongoing order") {
+			ctx.JSON(http.StatusBadRequest, OrderResponse{
+				Error: "cannot create order, theres an ongoing order",
+			})
+		} else {
+			ctx.Error(err)
+			ctx.JSON(http.StatusInternalServerError, OrderResponse{
+				Error: "something happened on our end, please try at a later time : " + err.Error(),
+			})
+		}
+
 		return
 	}
 

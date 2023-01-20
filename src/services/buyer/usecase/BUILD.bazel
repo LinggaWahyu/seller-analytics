@@ -10,6 +10,7 @@ go_library(
     importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/buyer/usecase",
     visibility = ["//visibility:public"],
     deps = [
+        "//src/pkg/db/yugabyte",
         "//src/services/buyer/domain",
         "//src/services/buyer/repository",
         "@org_uber_go_fx//:fx",
@@ -31,5 +32,6 @@ go_test(
         "@com_github_golang_mock//gomock",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",
+        "@io_gorm_datatypes//:datatypes",
     ],
 )

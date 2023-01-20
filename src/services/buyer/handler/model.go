@@ -23,7 +23,6 @@ type UpdateOrderRequest struct {
 }
 
 type CreateOrderRequest struct {
-	BuyerID  uint                            `json:"buyer_id"`
 	Products []CreateOrderRequestProductData `json:"products"`
 }
 

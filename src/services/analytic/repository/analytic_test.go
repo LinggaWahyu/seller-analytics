@@ -60,6 +60,7 @@ func Test_analyticRepository_GetAnalyticByDate(t *testing.T) {
 			want: &domain.Analytic{
 				AverageOrderValue: 100,
 				Date:              datatypes.Date(date),
+				DateString:        "2022-01-01",
 			},
 			mock: func() {
 				mock.ExpectQuery(regexp.QuoteMeta(

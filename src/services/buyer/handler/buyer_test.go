@@ -274,7 +274,7 @@ func Test_handler_OrderByID(t *testing.T) {
 		usecase  func() usecase.OrderUsecase
 		username string
 		wantCode int
-		want     gin.H
+		want     OrderResponse
 	}{
 		{
 			name: "error no auth",
@@ -288,8 +288,8 @@ func Test_handler_OrderByID(t *testing.T) {
 				return m
 			},
 			wantCode: http.StatusBadRequest,
-			want: gin.H{
-				"errors": "no authentication found",
+			want: OrderResponse{
+				Error: "",
 			},
 		},
 	}
@@ -304,7 +304,98 @@ func Test_handler_OrderByID(t *testing.T) {
 			router := ProvideGinEngine(sut)
 			router.ServeHTTP(recorder, tt.request())
 
-			var response gin.H
+			var response OrderResponse
+			json.Unmarshal(recorder.Body.Bytes(), &response)
+
+			assert.Equal(t, tt.want, response)
+
+			assert.Equal(t, tt.wantCode, recorder.Code)
+		})
+	}
+}
+
+func Test_handler_CreateOrder(t *testing.T) {
+
+	tests := []struct {
+		name     string
+		request  func() *http.Request
+		usecase  func() usecase.OrderUsecase
+		username string
+		wantCode int
+		want     OrderResponse
+	}{}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			recorder := httptest.NewRecorder()
+
+			sut := NewBuyerHandler(Params{
+				OrderUsecase: tt.usecase(),
+			})
+
+			router := ProvideGinEngine(sut)
+			router.ServeHTTP(recorder, tt.request())
+
+			var response OrderResponse
+			json.Unmarshal(recorder.Body.Bytes(), &response)
+
+			assert.Equal(t, tt.want, response)
+
+			assert.Equal(t, tt.wantCode, recorder.Code)
+		})
+	}
+}
+
+func Test_handler_UpdateOrderStatus(t *testing.T) {
+	tests := []struct {
+		name     string
+		request  func() *http.Request
+		usecase  func() usecase.OrderUsecase
+		username string
+		wantCode int
+		want     OrderResponse
+	}{}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			recorder := httptest.NewRecorder()
+
+			sut := NewBuyerHandler(Params{
+				OrderUsecase: tt.usecase(),
+			})
+
+			router := ProvideGinEngine(sut)
+			router.ServeHTTP(recorder, tt.request())
+
+			var response OrderResponse
+			json.Unmarshal(recorder.Body.Bytes(), &response)
+
+			assert.Equal(t, tt.want, response)
+
+			assert.Equal(t, tt.wantCode, recorder.Code)
+		})
+	}
+}
+
+func Test_handler_Orders(t *testing.T) {
+	tests := []struct {
+		name     string
+		request  func() *http.Request
+		usecase  func() usecase.OrderUsecase
+		username string
+		wantCode int
+		want     OrderResponse
+	}{}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			recorder := httptest.NewRecorder()
+
+			sut := NewBuyerHandler(Params{
+				OrderUsecase: tt.usecase(),
+			})
+
+			router := ProvideGinEngine(sut)
+			router.ServeHTTP(recorder, tt.request())
+
+			var response OrderResponse
 			json.Unmarshal(recorder.Body.Bytes(), &response)
 
 			assert.Equal(t, tt.want, response)

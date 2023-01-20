@@ -41,3 +41,9 @@ type PayloadEventOrder struct {
 	TotalRevenue     float64 `json:"total_revenue"`
 	TotalProductSold int64   `json:"total_product_sold"`
 }
+
+var UpdateOrderStatusVal = map[string]string{
+	"cancelled": "cancelled",
+	"completed": "completed",
+}
+

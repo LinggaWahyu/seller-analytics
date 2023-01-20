@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -159,6 +160,14 @@ func (h *handler) UpdateOrderStatus(ctx *gin.Context) {
 		ctx.Error(err)
 		ctx.JSON(http.StatusBadRequest, OrderResponse{
 			Error: "invalid body type",
+		})
+		return
+	}
+
+	if _, ok := domain.UpdateOrderStatusVal[request.Status]; !ok {
+		ctx.Error(errors.New("unexpected status value"))
+		ctx.JSON(http.StatusBadRequest, OrderResponse{
+			Error: "unexpected status value",
 		})
 		return
 	}

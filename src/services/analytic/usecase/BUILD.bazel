@@ -1,0 +1,29 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "usecase",
+    srcs = [
+        "analytic.go",
+        "usecase.go",
+    ],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/analytic/usecase",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/services/analytic/domain",
+        "//src/services/analytic/repository",
+        "@org_uber_go_fx//:fx",
+    ],
+)
+
+go_test(
+    name = "usecase_test",
+    srcs = ["analytic_test.go"],
+    embed = [":usecase"],
+    deps = [
+        "//src/services/analytic/domain",
+        "//src/services/analytic/repository",
+        "//src/services/analytic/repository/mocks",
+        "@com_github_golang_mock//gomock",
+        "@io_gorm_datatypes//:datatypes",
+    ],
+)

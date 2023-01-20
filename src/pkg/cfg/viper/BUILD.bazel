@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "viper",
+    srcs = ["viper.go"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/pkg/cfg/viper",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_spf13_viper//:viper",
+        "@io_bazel_rules_go//go/tools/bazel:go_default_library",
+    ],
+)

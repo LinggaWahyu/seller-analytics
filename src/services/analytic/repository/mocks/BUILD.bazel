@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "mocks",
+    srcs = ["analytic.go"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/analytic/repository/mocks",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/services/analytic/domain",
+        "@com_github_golang_mock//gomock",
+    ],
+)

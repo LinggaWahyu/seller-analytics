@@ -1,0 +1,40 @@
+http:
+  host: localhost
+  port: 8001
+database:
+  host: localhost
+  port: 25433
+  name: buyerdb
+  username: yugabyte
+  password: yugabyte
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: tokopedia-workshop
+  password: tokopedia-workshop
+ordersubscriber:
+  exchange:
+    name: order_event
+    nowait: false
+    kind: fanout
+    durable: false
+    autodelete: false
+    internal: false
+  queue:
+    name: statistic_calculation
+    nowait: false
+    durable: false
+    autodelete: false
+    exclusive: false
+  binding:
+    name: statistic_calculation
+    nowait: false
+    exchange: order_event
+statisticpublisher:
+  exchange:
+    name: statistic_calculation_event
+    nowait: false
+    kind: fanout
+    durable: false
+    autodelete: false
+    internal: false

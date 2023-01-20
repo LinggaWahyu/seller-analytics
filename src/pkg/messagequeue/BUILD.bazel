@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "messagequeue",
+    srcs = [
+        "publisher.go",
+        "rabbitmq.go",
+        "subscriber.go",
+        "types.go",
+    ],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/pkg/messagequeue",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@com_github_rabbitmq_amqp091_go//:amqp091-go",
+    ],
+)

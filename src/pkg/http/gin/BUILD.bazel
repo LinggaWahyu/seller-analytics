@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "gin",
+    srcs = ["server.go"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/pkg/http/gin",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/pkg/http/domain",
+        "@com_github_gin_gonic_gin//:gin",
+    ],
+)

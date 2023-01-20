@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "yugabyte",
+    srcs = [
+        "model.go",
+        "yugabyte.go",
+    ],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/pkg/db/yugabyte",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
+    ],
+)

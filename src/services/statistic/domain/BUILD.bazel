@@ -1,0 +1,12 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "domain",
+    srcs = ["statistics.go"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/statistic/domain",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/pkg/db/yugabyte",
+        "@io_gorm_datatypes//:datatypes",
+    ],
+)

@@ -1,0 +1,31 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+pkg_tar(
+    name = "tar",
+    srcs = glob(["*.yaml"]),
+    mode = "0644",
+    package_dir = "config",
+    strip_prefix = ".",
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "files",
+    srcs = glob(["*.yaml"]),
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "config",
+    srcs = ["config.go"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/analytic/config",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/pkg/cfg/viper",
+        "//src/pkg/db/yugabyte",
+        "//src/pkg/http/domain",
+        "//src/pkg/messagequeue",
+        "@org_uber_go_fx//:fx",
+    ],
+)

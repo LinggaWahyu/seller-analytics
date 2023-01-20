@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "buyer_lib",
+    srcs = ["main.go"],
+    data = ["//src/services/buyer/config:files"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/buyer",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//src/pkg/http/gin",
+        "//src/services/buyer/config",
+        "//src/services/buyer/handler",
+        "//src/services/buyer/repository",
+        "//src/services/buyer/usecase",
+        "@org_uber_go_fx//:fx",
+    ],
+)
+
+go_binary(
+    name = "buyer",
+    embed = [":buyer_lib"],
+    visibility = ["//visibility:public"],
+)

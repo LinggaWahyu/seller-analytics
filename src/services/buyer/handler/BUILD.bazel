@@ -1,0 +1,40 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "handler",
+    srcs = [
+        "auth.go",
+        "buyer.go",
+        "handler.go",
+        "model.go",
+    ],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/buyer/handler",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/pkg/db/yugabyte",
+        "//src/pkg/http/domain",
+        "//src/pkg/http/gin/middleware",
+        "//src/services/buyer/domain",
+        "//src/services/buyer/usecase",
+        "@com_github_gin_contrib_sessions//:sessions",
+        "@com_github_gin_contrib_sessions//cookie",
+        "@com_github_gin_gonic_gin//:gin",
+        "@io_gorm_datatypes//:datatypes",
+        "@org_uber_go_fx//:fx",
+    ],
+)
+
+go_test(
+    name = "handler_test",
+    srcs = ["buyer_test.go"],
+    embed = [":handler"],
+    deps = [
+        "//src/pkg/db/yugabyte",
+        "//src/services/buyer/domain",
+        "//src/services/buyer/usecase",
+        "//src/services/buyer/usecase/mocks",
+        "@com_github_gin_gonic_gin//:gin",
+        "@com_github_golang_mock//gomock",
+        "@com_github_stretchr_testify//assert",
+    ],
+)

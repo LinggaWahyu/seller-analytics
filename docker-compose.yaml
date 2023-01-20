@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  rabbitmq3-volume:
+
+services:
+  yugabytedb:
+    image: docker.io/yugabytedb/yugabyte:latest
+    command: |
+     bash -c '
+     mkdir -p /var/ybinit
+     echo "create database $${POSTGRES_DB}             " > /var/ybinit/01-db.sql
+     # start YugabyteDB
+     bin/yugabyted start --daemon=false --initial_scripts_dir=/var/ybinit --tserver_flags=ysql_enable_auth=true --base_dir=/home/yugabyte/yb_data
+     '
+    environment:
+      - POSTGRES_DB=buyerdb
+    ports:
+      - "25433:5433"
+      - "27000:7000"
+
+  rabbitmq:
+    image: rabbitmq:3.9.5-management-alpine
+    hostname: rabbitmq-master
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "tokopedia-workshop"
+      RABBITMQ_DEFAULT_PASS: "tokopedia-workshop"
+    volumes:
+      - rabbitmq3-volume:/var/lib/rabbitmq

@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "repository",
+    srcs = [
+        "repository.go",
+        "statistics.go",
+    ],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/statistic/repository",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//src/pkg/db/yugabyte",
+        "//src/pkg/messagequeue",
+        "//src/services/statistic/domain",
+        "@io_gorm_datatypes//:datatypes",
+        "@io_gorm_gorm//:gorm",
+        "@org_uber_go_fx//:fx",
+    ],
+)
+
+go_test(
+    name = "repository_test",
+    srcs = ["statistics_test.go"],
+    embed = [":repository"],
+    deps = [
+        "//src/services/statistic/domain",
+        "@com_github_data_dog_go_sqlmock//:go-sqlmock",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+        "@io_gorm_datatypes//:datatypes",
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
+    ],
+)

@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "statistic_lib",
+    srcs = ["main.go"],
+    data = ["//src/services/statistic/config:files"],
+    importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/statistic",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//src/pkg/http/gin",
+        "//src/services/statistic/config",
+        "//src/services/statistic/handler",
+        "//src/services/statistic/repository",
+        "//src/services/statistic/usecase",
+        "@org_uber_go_fx//:fx",
+    ],
+)
+
+go_binary(
+    name = "statistic",
+    embed = [":statistic_lib"],
+    visibility = ["//visibility:public"],
+)

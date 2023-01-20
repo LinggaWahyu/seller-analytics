@@ -1,0 +1,4 @@
+bazel-*
+deps.bzl
+.idea
+.vscode

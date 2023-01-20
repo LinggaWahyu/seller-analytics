@@ -52,7 +52,7 @@ It is also possible to debug via attaching a debugger to the process, if anyone 
 ## Project Structure
 - src: contains all source code
     - pkg: stores library code that is shareable across services
-    - services: stores the applications corresponding to our services in our microservice ecosystem. The structure follows Golang clean architecture as mentioned here https://docs.google.com/document/d/1rYz3QRPoQYwjcPc3XVJCiKa-Lj1ikosaZJtBvsDPQQQ/edit
+    - services: stores the applications corresponding to our services in our microservice ecosystem. The structure follows Golang clean architecture as mentioned in your handbook
       - config: contains configuration files and source code
       - domain: contains domain models specific to the service (domain/model/entity)
       - handler: contains source code to map domain objects to response format (controller/delivery)

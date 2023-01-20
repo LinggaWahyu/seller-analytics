@@ -165,9 +165,9 @@ func (h *handler) UpdateOrderStatus(ctx *gin.Context) {
 	}
 
 	if _, ok := domain.UpdateOrderStatusVal[request.Status]; !ok {
-		ctx.Error(errors.New("unexpected status value"))
+		ctx.Error(errors.New("unexpected status value, accepted status value is 'completed' and 'cancelled'"))
 		ctx.JSON(http.StatusBadRequest, OrderResponse{
-			Error: "unexpected status value",
+			Error: "unexpected status value, accepted status value is 'completed' and 'cancelled'",
 		})
 		return
 	}

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -63,6 +64,24 @@ func (h *handler) GetAnalyticByDate(ctx *gin.Context) {
 
 func SubscribeStatistic(repoCoreRabbitMQ messagequeue.Subscriber[statdomain.PayloadEventStatistic], usecase usecase.AnalyticUsecase) {
 	go func() {
-		// TODO write code here
+		err := repoCoreRabbitMQ.Subscribe(messagequeue.SubscribeConfig{
+			AutoAck: true,
+		}, func(msg statdomain.PayloadEventStatistic) {
+			if msg.Date != "" {
+				usecase.HandleStatisticEvent(domain.StatisticEvent{
+					TotalRevenue:   msg.TotalRevenue,
+					CompletedOrder: msg.CompletedOrder,
+					CanceledOrder:  msg.CanceledOrder,
+					TotalOrder:     msg.TotalOrder,
+					Date:           msg.Date,
+				})
+			} else {
+				log.Println("invalid message: date can't be empty")
+			}
+		})
+
+		if err != nil {
+			log.Println(err)
+		}
 	}()
 }

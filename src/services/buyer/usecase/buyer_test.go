@@ -98,7 +98,60 @@ func Test_Login(t *testing.T) {
 		wantErr  bool
 		want     *domain.Buyer
 		repo     func() repository.BuyerRepository
-	}{}
+	}{
+		{
+			name:     "error getting user by username",
+			username: "testuser",
+			wantErr:  true,
+			want:     nil,
+			repo: func() repository.BuyerRepository {
+				m := mocks.NewMockBuyerRepository(ctrl)
+				m.EXPECT().GetByUsername(gomock.Any(), "testuser").Return(nil, errors.New("mock error"))
+				return m
+			},
+		},
+		{
+			name:     "existing user login",
+			username: "testuser",
+			want: &domain.Buyer{
+				Username: "testuser",
+			},
+			repo: func() repository.BuyerRepository {
+				m := mocks.NewMockBuyerRepository(ctrl)
+				m.EXPECT().GetByUsername(gomock.Any(), "testuser").Return(&domain.Buyer{Username: "testuser"}, nil)
+				return m
+			},
+		},
+		{
+			name:     "new user",
+			username: "testuser",
+			want: &domain.Buyer{
+				Username: "testuser",
+			},
+			repo: func() repository.BuyerRepository {
+				m := mocks.NewMockBuyerRepository(ctrl)
+				m.EXPECT().GetByUsername(gomock.Any(), "testuser").Return(nil, nil)
+				m.EXPECT().Create(gomock.Any(), domain.Buyer{
+					Username: "testuser",
+				}).Return(&domain.Buyer{Username: "testuser"}, nil)
+				return m
+			},
+		},
+		{
+			name:     "error creating new user",
+			username: "testuser",
+			wantErr:  true,
+			want:     nil,
+			repo: func() repository.BuyerRepository {
+				m := mocks.NewMockBuyerRepository(ctrl)
+				m.EXPECT().GetByUsername(gomock.Any(), "testuser").Return(nil, nil)
+				m.EXPECT().Create(gomock.Any(), domain.Buyer{
+					Username: "testuser",
+				}).Return(nil, errors.New("mock error"))
+				return m
+			},
+		},
+	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

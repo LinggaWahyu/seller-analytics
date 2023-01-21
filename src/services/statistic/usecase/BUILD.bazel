@@ -9,8 +9,10 @@ go_library(
     importpath = "github.com/tokopedia-workshop-2022/seller-analytics-solution/src/services/statistic/usecase",
     visibility = ["//visibility:public"],
     deps = [
+        "//src/services/buyer/domain",
         "//src/services/statistic/domain",
         "//src/services/statistic/repository",
+        "@io_gorm_datatypes//:datatypes",
         "@org_uber_go_fx//:fx",
     ],
 )

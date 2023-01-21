@@ -28,6 +28,26 @@ func Test_analyticUsecase_GetAnalyticByDate(t *testing.T) {
 		repo    func() repository.AnalyticRepository
 	}{
 		{
+			name: "sukses",
+			date: date,
+			want: &domain.Analytic{
+				AverageOrderValue:     100,
+				SalesConvertionRate:   80,
+				CancellationOrderRate: 20,
+				Date:                  datatypes.Date(date),
+			},
+			repo: func() repository.AnalyticRepository {
+				m := mocks.NewMockAnalyticRepository(ctrl)
+				m.EXPECT().GetAnalyticByDate(gomock.Any(), date).Return(&domain.Analytic{
+					AverageOrderValue:     100,
+					SalesConvertionRate:   80,
+					CancellationOrderRate: 20,
+					Date:                  datatypes.Date(date),
+				}, nil)
+				return m
+			},
+		},
+		{
 			name:    "error",
 			date:    date,
 			want:    nil,
@@ -67,6 +87,63 @@ func Test_analyticUsecase_HandleStatisticEvent(t *testing.T) {
 		analytic domain.StatisticEvent
 		repo     func() repository.AnalyticRepository
 	}{
+		{
+			name: "sukses",
+			analytic: domain.StatisticEvent{
+				TotalRevenue:   100,
+				CompletedOrder: 4,
+				CanceledOrder:  1,
+				TotalOrder:     5,
+				Date:           dateString,
+			},
+			repo: func() repository.AnalyticRepository {
+				m := mocks.NewMockAnalyticRepository(ctrl)
+				m.EXPECT().GetAnalyticByDate(gomock.Any(), dateTime).Return(&domain.Analytic{
+					AverageOrderValue:     25,
+					SalesConvertionRate:   100,
+					CancellationOrderRate: 0,
+					Date:                  date,
+				}, nil)
+				m.EXPECT().UpdateAnalytic(gomock.Any(), domain.Analytic{
+					AverageOrderValue:     25,
+					SalesConvertionRate:   80,
+					CancellationOrderRate: 20,
+					Date:                  date,
+				}).Return(&domain.Analytic{
+					AverageOrderValue:     25,
+					SalesConvertionRate:   80,
+					CancellationOrderRate: 20,
+					Date:                  date,
+				}, nil)
+				return m
+			},
+		},
+		{
+			name: "error update",
+			analytic: domain.StatisticEvent{
+				TotalRevenue:   100,
+				CompletedOrder: 4,
+				CanceledOrder:  1,
+				TotalOrder:     5,
+				Date:           dateString,
+			},
+			repo: func() repository.AnalyticRepository {
+				m := mocks.NewMockAnalyticRepository(ctrl)
+				m.EXPECT().GetAnalyticByDate(gomock.Any(), dateTime).Return(&domain.Analytic{
+					AverageOrderValue:     25,
+					SalesConvertionRate:   100,
+					CancellationOrderRate: 0,
+					Date:                  date,
+				}, nil)
+				m.EXPECT().UpdateAnalytic(gomock.Any(), domain.Analytic{
+					AverageOrderValue:     25,
+					SalesConvertionRate:   80,
+					CancellationOrderRate: 20,
+					Date:                  date,
+				}).Return(nil, errors.New("mock error"))
+				return m
+			},
+		},
 		{
 			name: "no record, create new one",
 			analytic: domain.StatisticEvent{

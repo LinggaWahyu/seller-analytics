@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -64,6 +65,17 @@ func SubscribeOrder(
 	repoCoreRabbitMQ messagequeue.Subscriber[domain.PayloadEventOrder],
 	usecase usecase.StatisticsUsecase) {
 	go func() {
-		// TODO write code here
+		err := repoCoreRabbitMQ.Subscribe(messagequeue.SubscribeConfig{
+			AutoAck: true,
+		}, func(msg domain.PayloadEventOrder) {
+			if msg.OrderDate == "" {
+				log.Println("invalid message: date can't be empty")
+			}
+			usecase.HandleOrderEvent(msg)
+		})
+
+		if err != nil {
+			log.Println(err)
+		}
 	}()
 }
